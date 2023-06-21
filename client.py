@@ -2,7 +2,7 @@ import socket
 import sys
 import threading
 
-rendezvous = ('111.111.111.111', 55555)  # will need to change this to the server's ip  
+rendezvous = ('messaging-terminal.vercel.app', 55555)  # will need to change this to the server's ip  
 
 try:
     sys.argv[1]
@@ -13,9 +13,17 @@ except IndexError:
 # connect to rendezvous
 print('connecting to rendezvous server')
 
+# find available port
+sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+sock.bind(('0.0.0.0', 0))
+port = sock.getsockname()[1]
+sock.close()
+print(f'using port: {port}')
+
+# tell server we're ready
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-sock.bind(('0.0.0.0', 50001))
-sock.sendto(key, rendezvous)
+sock.bind(('0.0.0.0', port))
+sock.sendto(b'{key}', rendezvous)
 
 while True:
     data = sock.recv(1024).decode()
