@@ -1,10 +1,13 @@
 import socket
 import time
 
-known_port:int = 50002
-
+# find available port
+sock:socket.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+sock.bind(('0.0.0.0', 0))
+server_port = sock.getsockname()[1]
+sock.close()
 sock:socket.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-sock.bind(('0.0.0.0', 55555))
+sock.bind(('0.0.0.0', server_port))
 
 connections = {}
 
@@ -30,6 +33,6 @@ while True:
             client2 = connections.pop(key)
             addr2, port2 = client2
             # send info to both clients to connect
-            sock.sendto(f'{addr1} {port1} {known_port}'.encode(), client2)
-            sock.sendto(f'{addr2} {port2} {known_port}'.encode(), client1)
+            sock.sendto(f'{addr1} {port1} {server_port}'.encode(), client2)
+            sock.sendto(f'{addr2} {port2} {server_port}'.encode(), client1)
             break
