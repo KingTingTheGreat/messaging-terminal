@@ -4,9 +4,10 @@ import threading
 
 rendezvous = ('111.111.111.111', 55555)  # will need to change this to the server's ip  
 
-if sys.argv[1]:
+try:
+    sys.argv[1]
     key = sys.argv[1]
-else:
+except IndexError:
     key = input('enter key: ')
 
 # connect to rendezvous
